@@ -1,8 +1,7 @@
 const EventEmitter = require("events");
-let _url = "https://wwww.google.com";
 class _Logger extends EventEmitter{
     log(message){
-        console.log(`${_url}/${message}`);
+        console.log(`Message: ${message}`);
         this.emit("logged", {message: message});
     }
 };
