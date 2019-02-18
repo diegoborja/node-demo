@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const validator = require("./validator");
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,10 +20,7 @@ app.get("/api/courses/:id", (req, res) => {
 });
 
 app.post("/api/courses", (req, res) => {
-    const schema = {
-        name: Joi.string().min(3).required()
-    };
-    let validation = Joi.validate(req.body, schema);
+    let validation = validator.validate(req.body);
     if (validation.error){
         res.status(400).send(validation.error.details[0].message);
         return;
