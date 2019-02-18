@@ -35,7 +35,7 @@ app.post("/api/courses", (req, res) => {
         name: req.body.name
     }
     courses.push(map);
-    res.send(map[id]);
+    res.send(map);
 })
 
 app.listen(port);
