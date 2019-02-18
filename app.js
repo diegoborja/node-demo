@@ -11,17 +11,18 @@ app.get("/api/courses", (req, res) => {
 });
 
 app.get("/api/courses/:id", (req, res) => {
-    let course = courses.find(c=> c[req.params.id]);
+    const id = req.params.id;
+    let course = courses.find(c => c[id]);
     if (!course) {
-        res.status(404).send(`Course with Id: ${req.params.id} does not exist`);
+        res.status(404).send(`Course with Id: ${id} does not exist`);
         return;
-    } 
-    res.send(course);   
+    }
+    res.send(course);
 });
 
 app.post("/api/courses", (req, res) => {
     const { error } = validator.validate(req.body);
-    if (error){
+    if (error) {
         res.status(400).send(error.details[0].message);
         return;
     }
@@ -37,18 +38,29 @@ app.post("/api/courses", (req, res) => {
 
 app.put("/api/courses/:id", (req, res) => {
     const id = req.params.id;
-    let course = courses.find(c=> c[id]);
+    let course = courses.find(c => c[id]);
     if (!course) {
         res.status(404).send(`Course with Id: ${id} does not exist`);
         return;
     }
     const { error } = validator.validate(req.body);
-    if (error){
+    if (error) {
         res.status(400).send(error.details[0].message);
         return;
     }
     course[id].name = req.body.name;
-    res.send(course);   
+    res.send(course);
+});
+
+app.delete("/api/courses/:id", (req, res) => {
+    const id = req.params.id;
+    let index = courses.findIndex(c => c[id]);
+    if (index < 0) {
+        res.status(404).send(`Course with Id: ${id} does not exist`);
+        return;
+    }
+    courses.splice(index, 1);
+    res.send(`Course with Id: ${id} has been deleted`);
 });
 
 app.listen(port);
