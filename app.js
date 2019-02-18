@@ -20,9 +20,9 @@ app.get("/api/courses/:id", (req, res) => {
 });
 
 app.post("/api/courses", (req, res) => {
-    let validation = validator.validate(req.body);
-    if (validation.error){
-        res.status(400).send(validation.error.details[0].message);
+    const { error } = validator.validate(req.body);
+    if (error){
+        res.status(400).send(error.details[0].message);
         return;
     }
     let map = {};
@@ -34,5 +34,21 @@ app.post("/api/courses", (req, res) => {
     courses.push(map);
     res.send(map);
 })
+
+app.put("/api/courses/:id", (req, res) => {
+    const id = req.params.id;
+    let course = courses.find(c=> c[id]);
+    if (!course) {
+        res.status(404).send(`Course with Id: ${id} does not exist`);
+        return;
+    }
+    const { error } = validator.validate(req.body);
+    if (error){
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+    course[id].name = req.body.name;
+    res.send(course);   
+});
 
 app.listen(port);
