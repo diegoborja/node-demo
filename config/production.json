@@ -1,0 +1,6 @@
+{
+    "name": "Express Demo Application",
+    "mail": {
+        "host": "fake-host"
+    }
+}

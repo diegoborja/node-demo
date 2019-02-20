@@ -1,66 +1,10 @@
-const validator = require("./validator");
+const config = require("config");
 const express = require("express");
 const app = express();
+const courses = require("./routes/courses");
 const port = process.env.PORT || 3000;
-const courses = [];
 
 app.use(express.json());
-
-app.get("/api/courses", (req, res) => {
-    res.send(courses);
-});
-
-app.get("/api/courses/:id", (req, res) => {
-    const id = req.params.id;
-    let course = courses.find(c => c[id]);
-    if (!course) {
-        res.status(404).send(`Course with Id: ${id} does not exist`);
-        return;
-    }
-    res.send(course);
-});
-
-app.post("/api/courses", (req, res) => {
-    const { error } = validator.validate(req.body);
-    if (error) {
-        res.status(400).send(error.details[0].message);
-        return;
-    }
-    let map = {};
-    let id = Date.now();
-    map[id] = {
-        id: id,
-        name: req.body.name
-    }
-    courses.push(map);
-    res.send(map);
-})
-
-app.put("/api/courses/:id", (req, res) => {
-    const id = req.params.id;
-    let course = courses.find(c => c[id]);
-    if (!course) {
-        res.status(404).send(`Course with Id: ${id} does not exist`);
-        return;
-    }
-    const { error } = validator.validate(req.body);
-    if (error) {
-        res.status(400).send(error.details[0].message);
-        return;
-    }
-    course[id].name = req.body.name;
-    res.send(course);
-});
-
-app.delete("/api/courses/:id", (req, res) => {
-    const id = req.params.id;
-    let index = courses.findIndex(c => c[id]);
-    if (index < 0) {
-        res.status(404).send(`Course with Id: ${id} does not exist`);
-        return;
-    }
-    courses.splice(index, 1);
-    res.send(`Course with Id: ${id} has been deleted`);
-});
+app.use("/api/courses", courses);
 
 app.listen(port);
